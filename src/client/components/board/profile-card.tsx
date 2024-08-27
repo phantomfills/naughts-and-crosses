@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "@rbxts/react";
 import { Players, UserService } from "@rbxts/services";
-import { WHITE } from "shared/style/constants";
+import { PlayerOption } from "shared/game/constants";
+import { BLUE, RED, WHITE } from "shared/style/constants";
 
 const THUMBNAIL_TYPE = Enum.ThumbnailType.HeadShot;
 const THUMBNAIL_SIZE = Enum.ThumbnailSize.Size420x420;
 
 interface ProfileCardProps {
 	userId: number;
+	playerOption: PlayerOption;
 }
 
-export function ProfileCard({ userId }: ProfileCardProps) {
+export function ProfileCard({ userId, playerOption }: ProfileCardProps) {
 	const [userThumbnail, setUserThumbnail] = useState<string | undefined>(undefined);
 	const [username, setUsername] = useState<string | undefined>(undefined);
 
@@ -25,17 +27,17 @@ export function ProfileCard({ userId }: ProfileCardProps) {
 	}, []);
 
 	return (
-		<frame
-			Size={new UDim2(0, 150, 0, 200)}
-			Position={new UDim2(0.5, 0, 0.5, 0)}
-			AnchorPoint={new Vector2(0.5, 0.5)}
-			BackgroundTransparency={1}
-		>
-			<imagelabel Size={new UDim2(0, 150, 0, 150)} BackgroundTransparency={1} Image={userThumbnail} />
+		<frame Size={new UDim2(1, 0, 1, 0)} BackgroundTransparency={1}>
+			<imagelabel
+				Size={new UDim2(1, -10, 0.75, -10)}
+				Position={new UDim2(0, 5, 0, 10)}
+				BackgroundTransparency={1}
+				Image={userThumbnail}
+			/>
 			<textlabel
-				Size={new UDim2(0, 150, 0, 50)}
-				Position={new UDim2(0, 0, 0, 150)}
-				BackgroundColor3={WHITE}
+				Size={new UDim2(1, 0, 0.25, 0)}
+				Position={new UDim2(0, 0, 0.75, 0)}
+				BackgroundColor3={playerOption === "X" ? RED : BLUE}
 				Text={username ?? "Loading..."}
 				Font={Enum.Font.Arcade}
 				TextScaled
