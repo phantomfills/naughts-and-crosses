@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "@rbxts/react";
+import { Board, Cell, ORIGINAL_BOARD, PlayerOption } from "shared/game/constants";
 import { RED, BLUE, WHITE, GREEN } from "shared/style/constants";
-
-const PLAYER_OPTIONS = ["X", "O"] as const;
-type PlayerOption = (typeof PLAYER_OPTIONS)[number];
-
-type Cell = PlayerOption | false;
-type Board = Array<Cell>;
-
-const ORIGINAL_BOARD: Board = [false, false, false, false, false, false, false, false, false];
 
 export function Board() {
 	const [playerOption, setPlayerOption] = useState<PlayerOption>("X");
