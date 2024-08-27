@@ -1,6 +1,22 @@
 import React, { useEffect, useState } from "@rbxts/react";
 import { Board, Cell, ORIGINAL_BOARD, PlayerOption } from "shared/game/constants";
 import { RED, BLUE, WHITE, GREEN } from "shared/style/constants";
+import { ProfileCard, ProfileCardProps } from "./profile-card";
+
+const PLAYER_1_ID = 585267099;
+const PLAYER_2_ID = 1620332636;
+
+interface BoardProfileCardProps extends ProfileCardProps {
+	position: UDim2;
+}
+
+function BoardProfileCard({ userId, playerOption, position }: BoardProfileCardProps) {
+	return (
+		<frame Size={new UDim2(0, 150, 0, 200)} Position={position} BackgroundTransparency={1}>
+			<ProfileCard userId={userId} playerOption={playerOption} />
+		</frame>
+	);
+}
 
 export function Board() {
 	const [playerOption, setPlayerOption] = useState<PlayerOption>("X");
@@ -112,6 +128,8 @@ export function Board() {
 					},
 				}}
 			/>
+			<BoardProfileCard userId={PLAYER_1_ID} playerOption="X" position={new UDim2(0, 0, 0.5, 0)} />
+			<BoardProfileCard userId={PLAYER_2_ID} playerOption="O" position={new UDim2(1, -150, 0.5, 0)} />
 		</>
 	);
 }
