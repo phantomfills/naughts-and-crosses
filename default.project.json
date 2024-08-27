@@ -53,6 +53,12 @@
 			"$properties": {
 				"RespectFilteringEnabled": true
 			}
+		},
+		"Players": {
+			"$className": "Players",
+			"$properties": {
+				"CharacterAutoLoads": false
+			}
 		}
 	}
 }
