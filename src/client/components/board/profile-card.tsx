@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "@rbxts/react";
 import { Players, UserService } from "@rbxts/services";
-import { PlayerOption } from "shared/game/constants";
-import { USER_ID } from "shared/game/constants/core";
-import { BLUE, RED, WHITE } from "shared/style/constants";
+import { IMAGES, PlayerOption } from "shared/game/constants";
+import { USER_ID } from "shared/game/constants";
+import { BLUE, RED } from "shared/style/constants";
 
 const THUMBNAIL_TYPE = Enum.ThumbnailType.HeadShot;
 const THUMBNAIL_SIZE = Enum.ThumbnailSize.Size420x420;
@@ -17,14 +17,20 @@ export function ProfileCard({ userId, playerOption }: ProfileCardProps) {
 	const [username, setUsername] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
-		const [thumbnail] = Players.GetUserThumbnailAsync(userId, THUMBNAIL_TYPE, THUMBNAIL_SIZE);
-		setUserThumbnail(thumbnail);
+		try {
+			const [thumbnail] = Players.GetUserThumbnailAsync(999999999999999, THUMBNAIL_TYPE, THUMBNAIL_SIZE);
+			setUserThumbnail(thumbnail);
 
-		const userInfos: (UserInfo | undefined)[] = UserService.GetUserInfosByUserIdsAsync([userId]);
+			const userInfos: (UserInfo | undefined)[] = UserService.GetUserInfosByUserIdsAsync([userId]);
 
-		const firstUserInfo = userInfos[0];
-		if (!firstUserInfo) return;
-		setUsername(firstUserInfo.DisplayName);
+			const firstUserInfo = userInfos[0];
+			if (!firstUserInfo) return;
+			setUsername(firstUserInfo.DisplayName);
+		} catch (error) {
+			warn(error);
+			setUserThumbnail(IMAGES.ERROR);
+			setUsername("Error");
+		}
 	}, []);
 
 	return (
