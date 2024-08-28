@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "@rbxts/react";
 import { Board, Cell, ORIGINAL_BOARD, PlayerOption } from "shared/game/constants";
 import { RED, BLUE, WHITE, GREEN } from "shared/style/constants";
 import { ProfileCard, ProfileCardProps } from "./profile-card";
+import { useSelector } from "@rbxts/react-reflex";
+import { selectBoard, selectCellTaken, selectPlayerOption, selectStalemate, selectWinner } from "shared/store/board";
+import { producer } from "client/store";
+import { remotes } from "shared/remotes";
 
 const PLAYER_1_ID = 585267099;
 const PLAYER_2_ID = 1620332636;
@@ -19,47 +23,10 @@ function BoardProfileCard({ userId, playerOption, position }: BoardProfileCardPr
 }
 
 export function Board() {
-	const [playerOption, setPlayerOption] = useState<PlayerOption>("X");
-	const [board, setBoard] = useState<Board>(ORIGINAL_BOARD);
-	const [winner, setWinner] = useState<PlayerOption | undefined>(undefined);
-	const [stalemate, setStalemate] = useState<boolean>(false);
-
-	const cellTaken = (index: number) => board[index] !== false;
-
-	const setCell = (index: number, value: Cell) => {
-		const newBoard = [...board];
-		newBoard[index] = value;
-		setBoard(newBoard);
-	};
-
-	const evaluateWinner = (): PlayerOption | undefined => {
-		const winningCombinations = [
-			[0, 1, 2],
-			[3, 4, 5],
-			[6, 7, 8],
-			[0, 3, 6],
-			[1, 4, 7],
-			[2, 5, 8],
-			[0, 4, 8],
-			[2, 4, 6],
-		];
-
-		for (const combination of winningCombinations) {
-			const [a, b, c] = combination;
-			if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-				return board[a];
-			}
-		}
-	};
-
-	const isBoardFull = () => board.every((cell) => cell !== false);
-
-	const evaluateStalemate = () => isBoardFull() && !evaluateWinner();
-
-	useEffect(() => {
-		setWinner(evaluateWinner());
-		setStalemate(evaluateStalemate());
-	}, board);
+	const playerOption = useSelector(selectPlayerOption);
+	const board = useSelector(selectBoard);
+	const winner = useSelector(selectWinner);
+	const stalemate = useSelector(selectStalemate);
 
 	return (
 		<>
@@ -72,6 +39,7 @@ export function Board() {
 				TextScaled={true}
 				Font={Enum.Font.Arcade}
 			/>
+
 			<frame
 				Size={new UDim2(0, 300, 0, 300)}
 				Position={new UDim2(0.5, 0, 0.5, 0)}
@@ -100,11 +68,10 @@ export function Board() {
 								Font={Enum.Font.Arcade}
 								Event={{
 									MouseButton1Click: () => {
-										if (cellTaken(index)) return;
-										if (evaluateWinner()) return;
+										if (producer.getState(selectCellTaken(index))) return;
+										if (producer.getState(selectWinner)) return;
 
-										setCell(index, playerOption);
-										setPlayerOption(playerOption === "X" ? "O" : "X");
+										remotes.setCell.fire(index, playerOption);
 									},
 								}}
 							/>
@@ -112,22 +79,7 @@ export function Board() {
 					);
 				})}
 			</frame>
-			<textbutton
-				Size={new UDim2(0, 250, 0, 50)}
-				Position={new UDim2(0.5, 0, 0.5, 200)}
-				AnchorPoint={new Vector2(0.5, 0.5)}
-				BackgroundColor3={GREEN}
-				Text={"Restart?"}
-				TextScaled={true}
-				Font={Enum.Font.Arcade}
-				Event={{
-					MouseButton1Click: () => {
-						setPlayerOption("X");
-						setBoard(ORIGINAL_BOARD);
-						setWinner(undefined);
-					},
-				}}
-			/>
+
 			<BoardProfileCard userId={PLAYER_1_ID} playerOption="X" position={new UDim2(0, 0, 0.5, 0)} />
 			<BoardProfileCard userId={PLAYER_2_ID} playerOption="O" position={new UDim2(1, -150, 0.5, 0)} />
 		</>
