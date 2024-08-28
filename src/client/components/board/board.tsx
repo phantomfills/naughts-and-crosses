@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from "@rbxts/react";
-import { Board, Cell, ORIGINAL_BOARD, PlayerOption } from "shared/game/constants";
-import { RED, BLUE, WHITE, GREEN } from "shared/style/constants";
+import React from "@rbxts/react";
+import { Board } from "shared/game/constants";
+import { RED, BLUE, WHITE } from "shared/style/constants";
 import { ProfileCard, ProfileCardProps } from "./profile-card";
 import { useSelector } from "@rbxts/react-reflex";
-import { selectBoard, selectCellTaken, selectPlayerOption, selectStalemate, selectWinner } from "shared/store/board";
+import {
+	selectBoard,
+	selectCellTaken,
+	selectPlayer1,
+	selectPlayer2,
+	selectPlayerOption,
+	selectStalemate,
+	selectWinner,
+} from "shared/store/board";
 import { producer } from "client/store";
 import { remotes } from "shared/remotes";
-
-const PLAYER_1_ID = 585267099;
-const PLAYER_2_ID = 1620332636;
 
 interface BoardProfileCardProps extends ProfileCardProps {
 	position: UDim2;
@@ -23,10 +28,12 @@ function BoardProfileCard({ userId, playerOption, position }: BoardProfileCardPr
 }
 
 export function Board() {
-	const playerOption = useSelector(selectPlayerOption);
 	const board = useSelector(selectBoard);
 	const winner = useSelector(selectWinner);
 	const stalemate = useSelector(selectStalemate);
+	const player1 = useSelector(selectPlayer1);
+	const player2 = useSelector(selectPlayer2);
+	const playerOption = useSelector(selectPlayerOption);
 
 	return (
 		<>
@@ -71,7 +78,7 @@ export function Board() {
 										if (producer.getState(selectCellTaken(index))) return;
 										if (producer.getState(selectWinner)) return;
 
-										remotes.setCell.fire(index, playerOption);
+										remotes.setCell.fire(index);
 									},
 								}}
 							/>
@@ -80,8 +87,8 @@ export function Board() {
 				})}
 			</frame>
 
-			<BoardProfileCard userId={PLAYER_1_ID} playerOption="X" position={new UDim2(0, 0, 0.5, 0)} />
-			<BoardProfileCard userId={PLAYER_2_ID} playerOption="O" position={new UDim2(1, -150, 0.5, 0)} />
+			<BoardProfileCard userId={player1} playerOption="X" position={new UDim2(0, 0, 0.5, 0)} />
+			<BoardProfileCard userId={player2} playerOption="O" position={new UDim2(1, -150, 0.5, 0)} />
 		</>
 	);
 }

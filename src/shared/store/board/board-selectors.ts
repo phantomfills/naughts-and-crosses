@@ -31,3 +31,7 @@ export const selectWinner = (state: SharedState) => {
 export const selectStalemate = (state: SharedState) => selectBoardFull(state) && !selectWinner(state);
 
 export const selectPlayerOption = (state: SharedState) => state.board.playerOption;
+
+export const selectPlayer1 = (state: SharedState) => state.board.player1;
+
+export const selectPlayer2 = (state: SharedState) => state.board.player2;

@@ -31,7 +31,7 @@ export function Lobby() {
 				Position={new UDim2(0.5, 0, 0.4, 100)}
 				AnchorPoint={new Vector2(0.5, 0.5)}
 				BackgroundTransparency={1}
-				Text={dots.map((value) => `Waiting for players${value}`)}
+				Text={dots.map((value) => `Starting soon${value}`)}
 				TextColor3={Color3.fromRGB(255, 255, 255)}
 				Font={Enum.Font.Arcade}
 				TextScaled

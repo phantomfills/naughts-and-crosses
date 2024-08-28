@@ -39,7 +39,7 @@ export function ProfileCard({ userId, playerOption }: ProfileCardProps) {
 				Size={new UDim2(1, 0, 0.25, 0)}
 				Position={new UDim2(0, 0, 0.75, 0)}
 				BackgroundColor3={playerOption === "X" ? RED : BLUE}
-				Text={userId === USER_ID ? "You" : (username ?? "Loading...")}
+				Text={userId === USER_ID ? "You" : (username ?? "Loading...") + `(${playerOption})`}
 				Font={Enum.Font.Arcade}
 				TextScaled
 			/>
