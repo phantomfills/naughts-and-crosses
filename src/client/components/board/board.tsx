@@ -10,6 +10,7 @@ import {
 	selectPlayer2,
 	selectPlayerOption,
 	selectStalemate,
+	selectTimeoutTime,
 	selectWinner,
 } from "shared/store/board";
 import { producer } from "client/store";
@@ -34,9 +35,20 @@ export function Board() {
 	const player1 = useSelector(selectPlayer1);
 	const player2 = useSelector(selectPlayer2);
 	const playerOption = useSelector(selectPlayerOption);
+	const timeoutTime = useSelector(selectTimeoutTime);
 
 	return (
 		<>
+			<textlabel
+				Size={new UDim2(0, 300, 0, 50)}
+				Position={new UDim2(0.5, 0, 0.5, -250)}
+				AnchorPoint={new Vector2(0.5, 0.5)}
+				BackgroundTransparency={1}
+				Text={`${tostring(timeoutTime)}s left!`}
+				TextScaled={true}
+				Font={Enum.Font.Arcade}
+			/>
+
 			<textlabel
 				Size={new UDim2(0, 300, 0, 50)}
 				Position={new UDim2(0.5, 0, 0.5, -200)}

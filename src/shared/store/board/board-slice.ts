@@ -1,11 +1,12 @@
 import { createProducer } from "@rbxts/reflex";
-import { Board, Cell, PlayerOption } from "shared/game/constants";
+import { Board, Cell, PlayerOption, TIMEOUT_TIME } from "shared/game/constants";
 
 interface BoardState {
 	board: Board;
 	playerOption: PlayerOption;
 	player1: number;
 	player2: number;
+	timeout: number;
 }
 
 const initialState: BoardState = {
@@ -13,6 +14,7 @@ const initialState: BoardState = {
 	playerOption: "X",
 	player1: 0,
 	player2: 0,
+	timeout: TIMEOUT_TIME,
 };
 
 export const boardSlice = createProducer(initialState, {
@@ -32,5 +34,15 @@ export const boardSlice = createProducer(initialState, {
 		...state,
 		player1,
 		player2,
+	}),
+
+	setTimeout: (state, timeout: number) => ({
+		...state,
+		timeout,
+	}),
+
+	decrementTimeout: (state) => ({
+		...state,
+		timeout: state.timeout - 1,
 	}),
 });

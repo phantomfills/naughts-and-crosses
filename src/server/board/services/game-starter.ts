@@ -1,6 +1,7 @@
 import { Players } from "@rbxts/services";
 import { producer } from "server/store";
-import { selectWinner } from "shared/store/board";
+import { TIMEOUT_TIME } from "shared/game/constants";
+import { selectStalemate, selectWinner } from "shared/store/board";
 import { selectPage } from "shared/store/page";
 
 function getPlayersToStartGame(): [Player, Player] | undefined {
@@ -17,29 +18,39 @@ function getPlayersToStartGame(): [Player, Player] | undefined {
 	return [player1, player2];
 }
 
-export function initGameStarterService() {
-	(async () => {
-		for (;;) {
-			task.wait(1);
+function handleGameEnded() {
+	task.wait(10);
 
-			if (producer.getState(selectPage) !== "LOBBY") continue;
+	producer.setPage("LOBBY");
+}
 
-			const players = getPlayersToStartGame();
-			if (!players) continue;
-
-			const [player1, player2] = players;
-			producer.resetBoard();
-			producer.setPlayers(player1.UserId, player2.UserId);
-			producer.setPage("GAME");
-		}
-	})();
-
+export async function initGameStarterService() {
 	producer.subscribe(selectWinner, (winner) => {
 		if (producer.getState(selectPage) !== "GAME") return;
 		if (!winner) return;
 
+		handleGameEnded();
+	});
+
+	producer.subscribe(selectStalemate, (stalemate) => {
+		if (producer.getState(selectPage) !== "GAME") return;
+		if (!stalemate) return;
+
+		handleGameEnded();
+	});
+
+	for (;;) {
 		task.wait(10);
 
-		producer.setPage("LOBBY");
-	});
+		if (producer.getState(selectPage) !== "LOBBY") continue;
+
+		const players = getPlayersToStartGame();
+		if (!players) continue;
+
+		const [player1, player2] = players;
+		producer.resetBoard();
+		producer.setPlayers(player1.UserId, player2.UserId);
+		producer.setPage("GAME");
+		producer.setTimeout(TIMEOUT_TIME);
+	}
 }

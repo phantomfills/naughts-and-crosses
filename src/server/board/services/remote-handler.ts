@@ -1,4 +1,5 @@
 import { producer } from "server/store";
+import { TIMEOUT_TIME } from "shared/game/constants";
 import { remotes } from "shared/remotes";
 import { selectPlayer1, selectPlayer2, selectPlayerOption } from "shared/store/board";
 
@@ -19,5 +20,6 @@ export function initRemoteHandlerService() {
 
 		producer.setCell(index, currentOption);
 		producer.swapPlayerOption();
+		producer.setTimeout(TIMEOUT_TIME);
 	});
 }

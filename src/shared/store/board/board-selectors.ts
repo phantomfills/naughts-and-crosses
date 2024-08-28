@@ -35,3 +35,5 @@ export const selectPlayerOption = (state: SharedState) => state.board.playerOpti
 export const selectPlayer1 = (state: SharedState) => state.board.player1;
 
 export const selectPlayer2 = (state: SharedState) => state.board.player2;
+
+export const selectTimeoutTime = (state: SharedState) => state.board.timeout;
